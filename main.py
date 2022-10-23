@@ -29,7 +29,7 @@ headers = {
  }
 r = scraper.get('https://www.vinted.fr')
 #TOKEN="Ae9SZJbYXtAW78gT_p3xuWqyLmFrv-72"
-TOKEN="MTAyOTY0MDg1NTMxODk2MjIzOA.GgVt_A.ENopuoz_yudpXMbLm2e1uHOGvL37B-MpPGCa1E"
+TOKEN="MTAyOTY0MDg1NTMxODk2MjIzOA.GIKcd3.HXtQxX4OwnTC9N8xGqjLSNRAHJ9GCuRIorRLLI"
 intents = discord.Intents.all()
 intents.members= True
 client = commands.Bot(intents=discord.Intents.all() , command_prefix= "!" )
@@ -61,28 +61,7 @@ def get_channel():
 
 @client.event
 async def on_ready():
-    channel = client.get_channel(1029645377273606174)
-    nike = scraper.get('https://www.vinted.fr/api/v2/catalog/items?catalog_ids=79&color_ids=&brand_ids=53&size_ids=&material_ids=&status_ids=&price_to=20&order=newest_first&is_for_swap=0&page=1&per_page=10')
-    ralph_lauren = scraper.get('https://www.vinted.fr/api/v2/catalog/items?catalog_ids=79&color_ids=&brand_ids=88&size_ids=&material_ids=&status_ids=&price_to=25&order=newest_first&is_for_swap=0&page=1&per_page=10')
-    nike_df = pd.json_normalize(nike.json()['items'])
-    rl_df = pd.json_normalize(ralph_lauren.json()['items'])
-    print(ralph_lauren.json()["items"])
-
-
-
-
-    str_id = "id"
-    for loop in range(10):
-
-        embed = make_embed(nike_df, nike, loop)
-        embed2 = make_embed(rl_df,ralph_lauren,loop)
-        button = buttons(nike_df,loop)
-        button2 = buttons(rl_df,loop)
-
-        await channel.send(embed=embed)
-        await channel.send(view=button)
-        await channel.send(embed=embed2)
-        await channel.send(view=button2)
+    print("Ready")
 
 # @client.event
 # async def get_carhartt():
@@ -111,78 +90,65 @@ async def on_ready():
 @client.command(pass_context=True)
 
 async def start_bot(ctx):
-
-    posts = []
     channel = client.get_channel(1029645377273606174)
-    pulls_channel =client.get_channel(1029776624784252968)
-    while continue_running == True:
-        time.sleep(3)
-        carharrt = vinted.items.search(
-            "https://www.vinted.fr/vetements?currency=EUR&search_id=6610073971&order=newest_first&price_to=40.00&brand_id[]=872289&catalog[]=583&size_id[]=208&size_id[]=209",
-            10, 1)
-        pulls = vinted.items.search("https://www.vinted.fr/vetements?brand_id[]=53&brand_id[]=88&brand_id[]=304&brand_id[]=73952&brand_id[]=255&brand_id[]=362&brand_id[]=872289&catalog[]=79&price_to=30&currency=EUR&order=newest_first")
-        if len(pulls) > 0:
-            for loop in pulls:
+    nike = scraper.get('https://www.vinted.fr/api/v2/catalog/items?catalog_ids=79&color_ids=&brand_ids=53&size_ids=&material_ids=&status_ids=&price_to=20&order=newest_first&is_for_swap=0&page=1&per_page=10')
+    ralph_lauren = scraper.get('https://www.vinted.fr/api/v2/catalog/items?catalog_ids=79&color_ids=&brand_ids=88&size_ids=&material_ids=&status_ids=&price_to=30&order=newest_first&is_for_swap=0&page=1&per_page=10')
+    nike_df = pd.json_normalize(nike.json()['items'])
+    rl_df = pd.json_normalize(ralph_lauren.json()['items'])
+    print(ralph_lauren.json()["items"])
 
 
-                if loop.id not in posts:
-                    posts.append(loop.id)
-                    view = View()
-                    button1 = Button(label="Détails", style=discord.ButtonStyle.link, url=loop.url)
-                    button2 = Button(label="Buy", style=discord.ButtonStyle.link,
-                                     url=f"https://www.vinted.fr/checkout?transaction_id={loop.id}")
-                    view.add_item(button1)
-                    view.add_item(button2)
-                    embed = discord.Embed(title=loop.title, url=loop.url)
 
-                    print(loop.price)
-                    print(loop.title)
-                    embed.description = f"{loop.price}€/{loop.size_title}/{loop.brand_title}"
-                    embed.set_image(
-                        url=loop.photo)
-                    await asyncio.sleep(1)
-                    await pulls_channel.send(embed=embed)
-                    await pulls_channel.send(view=view)
-                    time.sleep(2)
-                else:
-                    print("rien")
-                    time.sleep(2)
 
-        if len(carharrt) > 0:
-            for loop in carharrt:
+    str_id = "id"
+    for loop in range(10):
 
-                if loop.id not in posts:
-                    posts.append(loop.id)
-                    print(loop.title)
-                    view = View()
-                    button1 = Button(label="Détails", style=discord.ButtonStyle.link, url=loop.url)
-                    button2 = Button(label="Buy", style=discord.ButtonStyle.link,
-                                     url=f"https://www.vinted.fr/checkout?transaction_id={loop.id}")
-                    view.add_item(button1)
-                    view.add_item(button2)
-                    embed = discord.Embed(title=loop.title, url=loop.url)
+        embed = make_embed(nike_df, nike, loop)
+        embed2 = make_embed(rl_df,ralph_lauren,loop)
+        button = buttons(nike_df,loop)
+        button2 = buttons(rl_df,loop)
+        search =search_users(nike_df["brand_title"][loop],nike_df["price"][loop])
+        search_rl = search_users(rl_df["brand_title"][loop],rl_df["price"][loop])
 
-                    print(loop.price)
-                    print(loop.title)
-                    embed.description = f"{loop.price}€/{loop.size_title}/{loop.brand_title}"
-                    embed.set_image(
-                        url=loop.photo)
-                    await asyncio.sleep(1)
-                    await channel.send(embed=embed)
-                    await channel.send(view=view)
-                    time.sleep(2)
-                else:
-                    print("Rien")
-                    time.sleep(2)
+
+        if search!= False:
+            role = discord.utils.get(ctx.guild.roles, id=search)
+            await channel.send(f"{role.mention}")
+        await channel.send(embed=embed)
+        await channel.send(view=button)
+        if search_rl!= False:
+            role = discord.utils.get(ctx.guild.roles, id=search_rl)
+            await channel.send(f"{role.mention}")
+        await channel.send(embed=embed2)
+        await channel.send(view=button2)
 
 @client.command(pass_context=True)
 async def setup_notification(ctx):
+    member = ctx.message.author
     user_id = ctx.message.author.id
     content = str(ctx.message.content).split()
-    add_notified_user(user_id,content[1],content[2])
 
+    if len(content) > 4:
+        brand = content[1]+" " + content[2]
+        price = content[3]
+        type_of_clothes = content[4]
+    else :
+        brand = content[1]
+        price = content[2]
+        type_of_clothes = content[3]
+    role_request=add_notified_user(brand,price,type_of_clothes)
+    if role_request == False:
+        role_name = f"{brand} {price} 💶 {type_of_clothes} 👕"
+        role = await ctx.guild.create_role(name=role_name)
+        time.sleep(2)
+        create_role(role.id,{brand},{price},{type_of_clothes})
+        role_id = role.id
+        get_role = discord.utils.get(ctx.guild.roles, id=role_id)
+        await member.add_roles(get_role)
 
-
-
+    else:
+        print(role_request)
+        role = discord.utils.get(ctx.guild.roles, id=role_request)
+        await member.add_roles(role)
 
 client.run(TOKEN)
