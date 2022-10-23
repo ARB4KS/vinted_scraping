@@ -29,7 +29,8 @@ headers = {
  }
 r = scraper.get('https://www.vinted.fr')
 #TOKEN="Ae9SZJbYXtAW78gT_p3xuWqyLmFrv-72"
-TOKEN="MTAyOTY0MDg1NTMxODk2MjIzOA.GIKcd3.HXtQxX4OwnTC9N8xGqjLSNRAHJ9GCuRIorRLLI"
+TOKEN="MTAyOTY0MDg1NTMxODk2MjIzOA.GdGm92.6z8BYa_MrYTmW-EsHDZ610E_E3Z_LS_uEloViU"
+
 intents = discord.Intents.all()
 intents.members= True
 client = commands.Bot(intents=discord.Intents.all() , command_prefix= "!" )
